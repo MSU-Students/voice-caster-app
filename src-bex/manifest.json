@@ -1,5 +1,5 @@
 {
-  "name": "quasar-browser-extension",
+  "name": "voice-caster-app",
   "description": "A Quasar web extension",
   "version": "1.0.0",
   "manifest_version": 2,
@@ -9,7 +9,7 @@
     "128": "icons/icon-128x128.png"
   },
   "browser_action": {
-    "default_title": "quasar-browser-extension"
+    "default_popup": "www/index.html#/popup"
   },
   "background": {
     "scripts": [
