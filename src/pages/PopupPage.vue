@@ -1,35 +1,57 @@
 <template>
   <q-page padding>
-    <div class="q-pa-md">
-      <q-toolbar class="bg-indigo-8 text-white" style="width: 600px">
-        <q-btn flat round dense icon="mic" />
-        <q-toolbar-title>Voice Caster</q-toolbar-title>
-        <q-space />
-        <q-btn flat round dense icon="speaker" />
-      </q-toolbar>
+    <div class="q-pt-md">
+      <Header/>
+      <div class="q-pa-md">
+        <q-card flat class="my-card">
+          <q-tabs v-model="tab" class="text-purple ">
+            <q-tab icon="mic" label="Broadcast" name="one" />
+            <q-tab icon="people" label="Manage Client" name="two" />
+          </q-tabs>
 
-      <div class="row no-wrap items-center q-mt-md q-pa-sm bg-grey-3 rounded-borders">
-        <q-space />
-        <div>VoiceCaster <q-badge>v1.0.0</q-badge></div>
+          <q-separator />
+
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel name="one">
+                <div class="q-pa-sm">
+                Broadcaster Page Content
+                <q-card class="my-card">
+                  My card for table
+                </q-card>
+              </div>
+                  
+            </q-tab-panel>
+
+            <q-tab-panel name="two">
+              <div class="q-pa-sm">
+                Manage Client Content
+                <q-card class="my-card">
+                  My card for table
+                </q-card>
+              </div>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
       </div>
-    <div class="text-h3">
-      Page Content
     </div>
-    
-    </div>
-
   </q-page>
 </template>
 
 <script>
+import Header from "src/components/Header.vue";
 export default {
   // name: 'Popup',
+  components: { Header },
   data() {
-    return {};
+    return {
+      tab: "one"
+    };
   }
 };
 </script>
 
 <style lang="sass" scoped>
-
+.my-card
+  width: 100%
+  max-width: 600px
 </style>
