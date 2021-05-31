@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page padding style="min-width: 600px">
     <div class="q-pt-md">
       <Header/>
       <div class="q-pa-md">
