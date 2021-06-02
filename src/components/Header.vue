@@ -4,7 +4,7 @@
         <q-btn flat round dense icon="mic" />
         <q-toolbar-title>Voice Caster</q-toolbar-title>
         <q-space />
-        <div>VoiceCaster <q-badge color="yellow">v1.0.0</q-badge></div>
+        <q-badge color="yellow">v1.0.0</q-badge>
         <q-btn flat round dense icon="speaker" />
       </q-toolbar>
     </q-header>

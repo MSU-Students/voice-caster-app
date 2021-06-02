@@ -1,18 +1,16 @@
 <template>
   <q-page padding style="min-width: 600px">
-    <div class="q-pt-md">
-      <Header/>
       <div class="q-pa-md">
         <q-card flat class="my-card">
           <q-tabs v-model="tab" class="text-purple ">
-            <q-tab icon="mic" label="Broadcast" name="one" />
-            <q-tab icon="people" label="Manage Client" name="two" />
+            <q-tab icon="mic" label="Broadcast" name="broadcast" />
+            <q-tab icon="people" label="Manage Client" name="manage_client" />
           </q-tabs>
 
           <q-separator />
 
           <q-tab-panels v-model="tab" animated>
-            <q-tab-panel name="one">
+            <q-tab-panel name="broadcast">
                 <div class="q-pa-sm">
                 Broadcaster Page Content
                 <q-card class="my-card">
@@ -22,29 +20,23 @@
                   
             </q-tab-panel>
 
-            <q-tab-panel name="two">
-              <div class="q-pa-sm">
-                Manage Client Content
-                <q-card class="my-card">
-                  My card for table
-                </q-card>
-              </div>
+            <q-tab-panel name="manage_client">
+              <TableClient/>
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
       </div>
-    </div>
   </q-page>
 </template>
 
 <script>
-import Header from "src/components/Header.vue";
+import TableClient from "src/components/TableClient.vue"
 export default {
-  // name: 'Popup',
-  components: { Header },
+  name: 'PopupPage',
+  components: { TableClient },
   data() {
     return {
-      tab: "one"
+      tab: "broadcast"
     };
   }
 };
