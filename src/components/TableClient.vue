@@ -30,10 +30,10 @@ export default {
   },
 
   mounted() {
-      this.clientList = this.data;
+      this.clientList = this.area;
   },
   computed: {
-      ...mapState('broadcaster', ['data'])
+      ...mapState('broadcaster', ['area'])
   }
 }
 </script>

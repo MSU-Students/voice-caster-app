@@ -1,6 +1,6 @@
 export default function () {
   return {
-    data: [
+    area: [
       {
         code: '1001',
         client: 'College of Information Technolgoy',
