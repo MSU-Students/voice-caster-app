@@ -6,8 +6,18 @@
         :data="clientList"
         :columns="columns"
         row-key="client"
+        selection="multiple"
+        :selected.sync="selected"
       >
+       <template v-slot:header-selection="scope">
+          <q-toggle v-model="scope.selected" />
+        </template>
+
+        <template v-slot:body-selection="scope">
+          <q-toggle v-model="scope.selected" />
+        </template>
       </q-table>
+        
     </q-card>
   </div>
 </template>
@@ -19,6 +29,7 @@ export default {
 
   data() {
     return {
+      selected: [],
       columns: [
         { name: 'client', required: true, label: 'Colleges/Offices', align: 'left', field: 'client', sortable: true, headerClasses: 'bg-primary text-white'},
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
