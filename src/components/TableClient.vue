@@ -21,7 +21,8 @@
         <template v-slot:top-right>
           <q-input rounded outlined dense debounce="300" v-model="filter" placeholder="Search colleges/offices...">
             <template v-slot:append>
-              <q-icon name="search"/>
+              <q-icon v-if="filter !== ''" name="close" @click="filter = ''"/>
+              <q-icon v-else name="search"/>  
             </template>
           </q-input>
         </template>
