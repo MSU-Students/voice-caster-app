@@ -1,5 +1,5 @@
 <template>
- <div class="q-pt-md">
+ <div class="q-pt-xs">
     <q-card flat class="my-card">
       <q-table
         class="my-sticky-column-table"
@@ -8,6 +8,7 @@
         row-key="client"
         selection="multiple"
         :selected.sync="selected"
+        :filter="filter"
       >
        <template v-slot:header-selection="scope">
           <q-toggle v-model="scope.selected" />
@@ -15,6 +16,14 @@
 
         <template v-slot:body-selection="scope">
           <q-toggle v-model="scope.selected" />
+        </template>
+        
+        <template v-slot:top-right>
+          <q-input rounded outlined dense debounce="300" v-model="filter" placeholder="Search colleges/offices...">
+            <template v-slot:append>
+              <q-icon name="search"/>
+            </template>
+          </q-input>
         </template>
       </q-table>
         
@@ -29,6 +38,7 @@ export default {
 
   data() {
     return {
+      filter: '',
       selected: [],
       columns: [
         { name: 'client', required: true, label: 'Colleges/Offices', align: 'left', field: 'client', sortable: true, headerClasses: 'bg-primary text-white'},
