@@ -18,9 +18,20 @@
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="broadcast">
                 <div class="q-pa-sm">
-                Broadcaster Page Content
-                <q-card class="my-card">
-                  My card for table
+                <q-card class="my-card" flat>
+                  <q-card-section class="text-center">
+                    <q-btn
+                      class="shadow-1"
+                      size="35px"
+                      round
+                      color="green-6"
+                      icon="mic_off"
+                      @click="startMicOn()"
+                    />
+                    <div class="row justify-center text-overline">
+                      {{ statusMessage.mic_off }}
+                    </div>
+                  </q-card-section>
                 </q-card>
               </div>
                   
@@ -42,8 +53,20 @@ export default {
   components: { TableClient },
   data() {
     return {
-      tab: "broadcast"
+      statusMessage: {
+        mic_on: 'STOP',
+        mic_off: 'Press to Start Announce '
+      },
+      tab: "broadcast",
+      status: 'Press to Start Announce',
+      isMicOn: false
     };
+  },
+
+  methods: {
+    startMicOn() {
+      return this.isMicOn = true;
+    }
   }
 };
 </script>
