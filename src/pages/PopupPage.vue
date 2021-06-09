@@ -19,7 +19,21 @@
             <q-tab-panel name="broadcast">
                 <div class="q-pa-sm">
                 <q-card class="my-card" flat>
-                  <q-card-section class="text-center">
+                  <q-card-section v-if="isMicOn" class="text-center">
+                    <q-btn
+                      class="shadow-24"
+                      size="35px"
+                      round
+                      color="red-6"
+                      icon="mic"
+                      @click="startMicOff()"
+                    />
+                    <div class="row justify-center text-overline">
+                      {{ statusMessage.mic_on }}
+                    </div>
+                  </q-card-section>
+
+                  <q-card-section v-else class="text-center">
                     <q-btn
                       class="shadow-1"
                       size="35px"
@@ -66,6 +80,9 @@ export default {
   methods: {
     startMicOn() {
       return this.isMicOn = true;
+    },
+    startMicOff() {
+      return this.isMicOn = false;
     }
   }
 };
