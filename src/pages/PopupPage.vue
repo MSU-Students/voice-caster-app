@@ -2,9 +2,15 @@
   <q-page padding style="min-width: 600px">
       <div class="q-pa-md">
         <q-card flat class="my-card">
-          <q-tabs v-model="tab" class="text-purple ">
-            <q-tab icon="mic" label="Broadcast" name="broadcast" />
-            <q-tab icon="people" label="Manage Client" name="manage_client" />
+          <q-tabs 
+            dense
+            v-model="tab" 
+            indicator-color="blue-9"
+            active-color="blue-9"
+            class="text-grey-10"
+            >
+            <q-tab icon="keyboard_voice" label="Broadcast" name="broadcast" />
+            <q-tab icon="manage_accounts" label="Manage Client" name="manage_client" />
           </q-tabs>
 
           <q-separator />
