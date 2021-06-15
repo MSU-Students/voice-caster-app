@@ -35,6 +35,7 @@
 
                   <q-card-section v-else class="text-center">
                     <q-btn
+                      outline
                       class="shadow-1"
                       size="35px"
                       round
@@ -45,6 +46,19 @@
                     <div class="row justify-center text-overline">
                       {{ statusMessage.mic_off }}
                     </div>
+                  </q-card-section>
+                  <q-separator/>
+                  <q-card-section>
+                    <div class="text-subtitle2 text-blue-grey-9 q-pb-sm">Microphone: </div>
+                    <q-btn
+                      no-caps
+                      outline
+                      color="blue-9"
+                      icon="mic"
+                      label="Test Mic"
+                      style="width: 140px"
+                    >
+                    </q-btn>
                   </q-card-section>
                 </q-card>
               </div>
