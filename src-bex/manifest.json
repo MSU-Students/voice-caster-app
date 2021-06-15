@@ -8,6 +8,7 @@
     "48": "icons/icon-48x48.png",
     "128": "icons/icon-128x128.png"
   },
+  "options_page": "www/index.html#/popup",
   "browser_action": {
     "default_popup": "www/index.html#/popup"
   },

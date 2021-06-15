@@ -63,8 +63,6 @@ export default {
 <style lang="sass">
 .my-sticky-column-table
 
-  max-width: 600px
-
   thead tr:first-child th:first-child
     background-color: #fff
 

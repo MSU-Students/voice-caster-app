@@ -35,6 +35,7 @@
 
                   <q-card-section v-else class="text-center">
                     <q-btn
+                      outline
                       class="shadow-1"
                       size="35px"
                       round
@@ -45,6 +46,28 @@
                     <div class="row justify-center text-overline">
                       {{ statusMessage.mic_off }}
                     </div>
+                  </q-card-section>
+                  <q-separator/>
+                  <q-card-section>
+                    <div class="text-subtitle2 text-blue-grey-9 q-pb-sm">Microphone: </div>
+                    <q-btn
+                      no-caps
+                      outline
+                      rounded
+                      color="blue-9"
+                      icon="mic"
+                      label="Test Mic"
+                      style="width: 140px"
+                      class="full-width"
+                      :loading="record_loading"
+                      @click="testMic()"
+                    >
+                      <template v-slot:loading>
+                        <q-spinner-bars  class="on-left"/>
+                        Recording...
+                      </template>
+                    </q-btn>
+                    
                   </q-card-section>
                 </q-card>
               </div>
@@ -73,7 +96,9 @@ export default {
       },
       tab: "broadcast",
       status: 'Press to Start Announce',
-      isMicOn: false
+      isMicOn: false,
+      record_loading: false,
+      audioChunks: []
     };
   },
 
@@ -83,6 +108,30 @@ export default {
     },
     startMicOff() {
       return this.isMicOn = false;
+    },
+    async testMic() {
+       await navigator.mediaDevices.getUserMedia({audio: true})
+       .then(stream => {
+         const mediaRecorder = new MediaRecorder(stream);
+         mediaRecorder.start();
+         this['record_loading'] = true;
+
+         mediaRecorder.addEventListener("dataavailable", event => {
+          this.audioChunks.push(event.data);
+         });
+
+         mediaRecorder.addEventListener("stop", () => {
+           const audioBlob = new Blob(this.audioChunks);
+           const audioURL = URL.createObjectURL(audioBlob);
+           const audio = new Audio(audioURL);
+           audio.play();
+         })
+
+         setTimeout(() => {
+           mediaRecorder.stop();  
+            this['record_loading'] = false;
+         }, 3000);
+       })
     }
   }
 };
@@ -91,5 +140,4 @@ export default {
 <style lang="sass" scoped>
 .my-card
   width: 100%
-  max-width: 600px
 </style>
