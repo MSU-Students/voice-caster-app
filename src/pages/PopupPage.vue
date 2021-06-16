@@ -64,7 +64,7 @@
                     >
                       <template v-slot:loading>
                         <q-spinner-bars  class="on-left"/>
-                        Recording...
+                        Recording in 3 secs...
                       </template>
                     </q-btn>
                     
@@ -97,8 +97,7 @@ export default {
       tab: "broadcast",
       status: 'Press to Start Announce',
       isMicOn: false,
-      record_loading: false,
-      audioChunks: []
+      record_loading: false
     };
   },
 
@@ -115,13 +114,14 @@ export default {
          const mediaRecorder = new MediaRecorder(stream);
          mediaRecorder.start();
          this['record_loading'] = true;
+         const audioChunks = [];
 
          mediaRecorder.addEventListener("dataavailable", event => {
-          this.audioChunks.push(event.data);
+          audioChunks.push(event.data);
          });
 
          mediaRecorder.addEventListener("stop", () => {
-           const audioBlob = new Blob(this.audioChunks);
+           const audioBlob = new Blob(audioChunks);
            const audioURL = URL.createObjectURL(audioBlob);
            const audio = new Audio(audioURL);
            audio.play();
