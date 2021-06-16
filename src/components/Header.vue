@@ -1,5 +1,5 @@
 <template>
-    <q-header elevated style="background: linear-gradient(145deg, #15503e 15%, #133154 70%);">
+    <q-header style="background: linear-gradient(145deg, #15503e 15%, #133154 70%);">
       <q-toolbar>
         <q-btn flat round dense icon="mic" />
         <q-toolbar-title>Voice Caster</q-toolbar-title>
