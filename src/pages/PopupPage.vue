@@ -66,7 +66,15 @@
                         <q-spinner-bars  class="on-left"/>
                         Recording in 3 secs...
                       </template>
+                      <q-tooltip 
+                        content-class="bg-yellow-11 text-black"
+                        anchor="top middle"
+                        self="bottom middle"
+                      >
+                        Click Test Mic to make sure others can hear you!
+                      </q-tooltip>
                     </q-btn>
+                    
                     
                   </q-card-section>
                 </q-card>
