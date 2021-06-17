@@ -48,35 +48,40 @@
                       {{ statusMessage.mic_off }}
                     </div>
                   </q-card-section>
-                  <q-separator/>
                   <q-card-section>
                     <div class="text-subtitle2 text-blue-grey-9 q-pb-sm">Microphone: </div>
-                    <q-btn
-                      no-caps
-                      outline
-                      rounded
-                      color="blue-9"
-                      icon="mic"
-                      label="Test Mic"
-                      style="width: 140px"
-                      class="full-width"
-                      :loading="record_loading"
-                      @click="testMic()"
-                    >
-                      <template v-slot:loading>
-                        <q-spinner-bars  class="on-left"/>
-                        Recording in 3 secs...
-                      </template>
-                      <q-tooltip 
-                        content-class="bg-yellow-11 text-black"
-                        anchor="top middle"
-                        self="bottom middle"
+                    <div class="q-gutter-sm">
+                      <q-select class="full-width" 
+                        :options="microphones" 
+                        outlined 
+                        label="Select Microphone"
+                        v-model="selectedMic"
+                      />
+                      <q-btn
+                        no-caps
+                        outline
+                        rounded
+                        color="blue-9"
+                        icon="mic"
+                        label="Test Mic"
+                        style="width: 140px"
+                        class="full-width"
+                        :loading="record_loading"
+                        @click="testMic()"
                       >
-                        Click Test Mic to make sure others can hear you!
-                      </q-tooltip>
-                    </q-btn>
-                    
-                    
+                        <template v-slot:loading>
+                          <q-spinner-bars  class="on-left"/>
+                          Recording...
+                        </template>
+                        <q-tooltip 
+                          content-class="bg-yellow-11 text-black"
+                          anchor="top middle"
+                          self="bottom middle"
+                        >
+                          Click Test Mic to make sure others can hear you!
+                        </q-tooltip>
+                      </q-btn>
+                    </div>  
                   </q-card-section>
                 </q-card>
               </div>
@@ -106,7 +111,9 @@ export default {
       tab: "broadcast",
       status: 'Press to Start Announce',
       isMicOn: false,
-      record_loading: false
+      record_loading: false,
+      microphones: [],
+      selectedMic: ''
     };
   },
 
