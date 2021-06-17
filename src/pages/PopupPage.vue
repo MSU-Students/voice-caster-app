@@ -2,7 +2,8 @@
   <q-page padding style="min-width: 600px">
       <div class="q-pa-md">
         <q-card flat class="my-card">
-          <q-tabs 
+          <q-tabs
+            align="justify" 
             dense
             v-model="tab" 
             indicator-color="blue-9"
