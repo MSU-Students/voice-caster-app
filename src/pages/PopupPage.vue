@@ -117,13 +117,19 @@ export default {
     };
   },
 
+  async created() {
+    this.getConnectedDevices();
+  },
+
   methods: {
     startMicOn() {
       return this.isMicOn = true;
     },
+
     startMicOff() {
       return this.isMicOn = false;
     },
+
     async testMic() {
        await navigator.mediaDevices.getUserMedia({audio: true})
        .then(stream => {
@@ -148,6 +154,13 @@ export default {
             this['record_loading'] = false;
          }, 3000);
        })
+    },
+
+    async getConnectedDevices() {
+      const devices = await navigator.mediaDevices.enumerateDevices();
+      const listMic = devices.filter(device => device.kind === 'audioinput');
+      this.microphones = listMic;
+      console.log('microphones: ', listMic);  
     }
   }
 };
