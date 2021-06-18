@@ -30,7 +30,7 @@
                     size="35px"
                     round
                     color="red-6"
-                    icon="mic"
+                    icon="mic_off"
                     @click="startMicOff()"
                   />
                   <div class="row justify-center text-overline">
@@ -45,7 +45,7 @@
                     size="35px"
                     round
                     color="green-6"
-                    icon="mic_off"
+                    icon="mic"
                     @click="startMicOn()"
                   />
                   <div class="row justify-center text-overline">
@@ -115,7 +115,7 @@ export default {
   data() {
     return {
       statusMessage: {
-        mic_on: "STOP",
+        mic_on: "Click to STOP",
         mic_off: "Press to Start Announce "
       },
       tab: "broadcast",
