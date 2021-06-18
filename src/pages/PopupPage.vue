@@ -58,6 +58,7 @@
                   </div>
                   <div class="q-gutter-sm">
                     <q-select
+                      :disable="isDisabled"
                       id="audioInput"
                       class="full-width"
                       :options="microphones"
@@ -67,6 +68,7 @@
                       @input="setConnectedDevices($event)"
                     />
                     <q-btn
+                      :disable="isDisabled"
                       no-caps
                       outline
                       rounded
@@ -122,7 +124,8 @@ export default {
       record_loading: false,
       microphones: [],
       selectedMic: "",
-      audioStreamSelected: undefined
+      audioStreamSelected: undefined,
+      isDisabled: false
     };
   },
 
@@ -132,10 +135,12 @@ export default {
 
   methods: {
     startMicOn() {
+      this.isDisabled = true;
       return (this.isMicOn = true);
     },
 
     startMicOff() {
+      this.isDisabled = false;
       return (this.isMicOn = false);
     },
 
