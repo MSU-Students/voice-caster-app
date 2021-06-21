@@ -77,7 +77,7 @@
                       label="Test Mic"
                       style="width: 140px"
                       class="full-width"
-                      :loading="record_loading"
+                      :loading="showAudioLoader"
                       @click="testMic()"
                     >
                       <template v-slot:loading>
@@ -109,6 +109,7 @@
 
 <script>
 import TableClient from "src/components/TableClient.vue";
+import audioRecorderService from "../services/audio-recorder.service.js"
 export default {
   name: "PopupPage",
   components: { TableClient },
@@ -121,7 +122,7 @@ export default {
       tab: "broadcast",
       status: "Press to Start Announce",
       isMicOn: false,
-      record_loading: false,
+      showAudioLoader: false,
       microphones: [],
       selectedMic: "",
       audioStreamSelected: undefined,
@@ -145,26 +146,11 @@ export default {
     },
 
     async testMic() {
-      const mediaRecorder = new MediaRecorder(this.audioStreamSelected);
-      mediaRecorder.start();
-      this["record_loading"] = true;
-      const audioChunks = [];
-
-      mediaRecorder.addEventListener("dataavailable", event => {
-        audioChunks.push(event.data);
-      });
-
-      mediaRecorder.addEventListener("stop", () => {
-        const audioBlob = new Blob(audioChunks);
-        const audioURL = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioURL);
-        console.log(audio);
-        audio.play();
-      });
-
+      await audioRecorderService.recordAudio().then(() => {
+        this.showAudioLoader = true;
+      })
       setTimeout(() => {
-        mediaRecorder.stop();
-        this["record_loading"] = false;
+        this.showAudioLoader = false;
       }, 3000);
     },
 
