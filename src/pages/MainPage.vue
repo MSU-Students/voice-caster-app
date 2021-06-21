@@ -23,7 +23,7 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="broadcast">
             <div class="q-pa-sm">
-              <q-card class="my-card" >
+              <q-card class="my-card q-pt-lg" flat>
                 <q-card-section v-if="isMicOn" class="text-center">
                   <q-btn
                     class="shadow-24"
