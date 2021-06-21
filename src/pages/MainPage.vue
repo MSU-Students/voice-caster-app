@@ -1,5 +1,5 @@
 <template>
-  <q-page padding style="min-width: 600px">
+  <q-page padding>
     <div class="q-pa-md">
       <q-card flat class="my-card">
         <q-tabs
@@ -23,7 +23,7 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="broadcast">
             <div class="q-pa-sm">
-              <q-card class="my-card" flat>
+              <q-card class="my-card" >
                 <q-card-section v-if="isMicOn" class="text-center">
                   <q-btn
                     class="shadow-24"
@@ -64,7 +64,7 @@
                       :options="microphones"
                       outlined
                       label="Select Microphone"
-                      v-model="selectedMic"
+                      v-model="selectedDevice"
                       @input="setConnectedDevices($event)"
                     />
                     <q-btn
@@ -110,6 +110,7 @@
 <script>
 import TableClient from "src/components/TableClient.vue";
 import audioRecorderService from "../services/audio-recorder.service.js"
+import microphoneSettingService from "../services/microphone-setting.service.js"
 export default {
   name: "PopupPage",
   components: { TableClient },
@@ -124,14 +125,17 @@ export default {
       isMicOn: false,
       showAudioLoader: false,
       microphones: [],
-      selectedMic: "",
+      selectedDevice: "",
       audioStreamSelected: undefined,
       isDisabled: false
     };
   },
 
   async created() {
-    this.getConnectedDevices();
+    const devices = await microphoneSettingService.devices();
+    this.microphones = devices;
+    console.log("devices: ", devices);
+    this.selectedDevice = devices[0];
   },
 
   methods: {
@@ -154,30 +158,9 @@ export default {
       }, 3000);
     },
 
-    async getConnectedDevices(val) {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const listMic = devices.filter(device => device.kind === "audioinput");
-      this.microphones = listMic.map(d => {
-        return d.label;
-      });
-    },
-
     async setConnectedDevices(device) {
-      const devices = await navigator.mediaDevices.enumerateDevices();
-      const listMic = devices.filter(device => device.kind === "audioinput");
-      let selectedDevice = listMic.find(d => d.label == device);
-      console.log(selectedDevice);
-      const constraints = {
-        audio: {
-          deviceId: selectedDevice.deviceId
-            ? { exact: selectedDevice.deviceId }
-            : undefined
-        }
-      };
-      this.audioStreamSelected = await navigator.mediaDevices.getUserMedia(
-        constraints
-      );
+      const selectedDevice = await microphoneSettingService.setConnectedDevices(device);
+      this.audioStreamSelected = selectedDevice;  
     }
   }
 };
