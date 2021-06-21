@@ -2,19 +2,19 @@
 const routes = [
   {
     path: '/',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('src/layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      { path: '', component: () => import('src/pages/MainPage.vue') }
     ]
   },
 
-  {
-    path: '/',
-    component: () => import('layouts/BEXMainLayout.vue'),
-    children: [
-      { path: 'popup', component: () => import('pages/PopupPage.vue') }
-    ]
-  },
+  // {
+  //   path: '/',
+  //   component: () => import('src/layouts/MainLayout.vue'),
+  //   children: [
+  //     { path: 'popup', component: () => import('src/pages/MainPage.vue') }
+  //   ]
+  // },
 
   // Always leave this as last one,
   // but you can also remove it
