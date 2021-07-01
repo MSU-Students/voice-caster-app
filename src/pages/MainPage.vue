@@ -23,7 +23,14 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="broadcast">
             <div class="q-pa-sm">
-              <q-card class="my-card q-pt-lg" flat>
+              <q-item>
+                <q-item-section>
+                  <q-item-label>
+                    <q-badge outline color="red" label="Not connected"
+                  /></q-item-label>
+                </q-item-section>
+              </q-item>
+              <q-card class="my-card q-pt-xs" flat>
                 <q-card-section v-if="isMicOn" class="text-center">
                   <q-btn
                     class="shadow-24"
@@ -109,8 +116,8 @@
 
 <script>
 import TableClient from "src/components/TableClient.vue";
-import audioRecorderService from "../services/audio-recorder.service.js"
-import microphoneSettingService from "../services/microphone-setting.service.js"
+import audioRecorderService from "../services/audio-recorder.service.js";
+import microphoneSettingService from "../services/microphone-setting.service.js";
 export default {
   name: "PopupPage",
   components: { TableClient },
@@ -152,15 +159,17 @@ export default {
     async testMic() {
       await audioRecorderService.recordAudio().then(() => {
         this.showAudioLoader = true;
-      })
+      });
       setTimeout(() => {
         this.showAudioLoader = false;
       }, 3000);
     },
 
     async setConnectedDevices(device) {
-      const selectedDevice = await microphoneSettingService.setConnectedDevices(device);
-      this.audioStreamSelected = selectedDevice;  
+      const selectedDevice = await microphoneSettingService.setConnectedDevices(
+        device
+      );
+      this.audioStreamSelected = selectedDevice;
     }
   }
 };
