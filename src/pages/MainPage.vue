@@ -23,13 +23,22 @@
         <q-tab-panels v-model="tab" animated>
           <q-tab-panel name="broadcast">
             <div class="q-pa-sm">
-              <q-item>
-                <q-item-section>
-                  <q-item-label>
-                    <q-badge outline color="red" label="Not connected"
-                  /></q-item-label>
-                </q-item-section>
-              </q-item>
+              <q-toolbar>
+                <q-btn
+                  push
+                  color="white"
+                  text-color="negative"
+                  label="connect server"
+                />
+                <div class="q-ml-md">
+                  <q-badge outline color="red" label="Not connected"></q-badge>
+                </div>
+                <q-space />
+                <div class="text-overline">
+                  Status:
+                  <q-badge color="yellow-14" label="On Air"></q-badge>
+                </div>
+              </q-toolbar>
               <q-card class="my-card q-pt-xs" flat>
                 <q-card-section v-if="isMicOn" class="text-center">
                   <q-btn
