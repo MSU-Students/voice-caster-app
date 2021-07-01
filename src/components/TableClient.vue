@@ -34,6 +34,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import officeDBService from "../services/office-db.service.js"
 
 export default {
 
@@ -51,8 +52,10 @@ export default {
     };
   },
 
-  mounted() {
-      this.clientList = this.area;
+  async mounted() {
+      //officeDBService.addOffice();
+      const office = await officeDBService.displayOffices();
+      this.clientList = office;
   },
   computed: {
       ...mapState('broadcaster', ['area'])
