@@ -25,7 +25,9 @@
             <div class="q-pa-sm">
               <q-toolbar>
                 <q-btn
+                  icon="dns"
                   push
+                  rounded
                   color="white"
                   text-color="negative"
                   label="connect server"
