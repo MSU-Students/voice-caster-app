@@ -25,15 +25,46 @@
             <div class="q-pa-sm">
               <q-toolbar>
                 <q-btn
-                  icon="dns"
+                  v-if="isConnected == false"
+                  :loading="showConnectLoader"
+                  icon="toggle_on"
                   push
                   rounded
-                  color="white"
-                  text-color="negative"
+                  color="green"
+                  text-color="white"
                   label="connect server"
-                />
-                <div class="q-ml-md">
+                  @click.prevent="connect"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-ios v-if="showConnectLoader" class="on-left" />
+                    Connecting...
+                  </template>
+                </q-btn>
+                <q-btn
+                  v-else
+                  :loading="showConnectLoader"
+                  icon="toggle_off"
+                  push
+                  rounded
+                  color="negative"
+                  text-color="white"
+                  label="Disconnect"
+                  @click.prevent="disconnect"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-ios v-if="showConnectLoader" class="on-left" />
+                    Connecting...
+                  </template>
+                </q-btn>
+                <div v-if="isConnected == false" class="q-ml-md">
                   <q-badge outline color="red" label="Not connected"></q-badge>
+                </div>
+                <div v-else class="q-ml-md">
+                  <q-badge
+                    outline
+                    color="dark"
+                    label="Conncected to Server"
+                  ></q-badge>
                 </div>
                 <q-space />
                 <div class="text-overline">
@@ -113,6 +144,21 @@
                   </div>
                 </q-card-section>
               </q-card>
+              <q-card flat>
+                <q-card-section>
+                  <q-input v-model="send_message" label="What is your name? " />
+                </q-card-section>
+                <q-card-actions align="left">
+                  <q-btn
+                    class="full-width"
+                    @click="send()"
+                    type="submit"
+                    color="primary"
+                    label="send"
+                  >
+                  </q-btn>
+                </q-card-actions>
+              </q-card>
             </div>
           </q-tab-panel>
 
@@ -129,6 +175,9 @@
 import TableClient from "src/components/TableClient.vue";
 import audioRecorderService from "../services/audio-recorder.service.js";
 import microphoneSettingService from "../services/microphone-setting.service.js";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {
   name: "PopupPage",
   components: { TableClient },
@@ -145,7 +194,11 @@ export default {
       microphones: [],
       selectedDevice: "",
       audioStreamSelected: undefined,
-      isDisabled: false
+      isDisabled: false,
+      received_messages: [],
+      send_message: null,
+      isConnected: false,
+      showConnectLoader: false
     };
   },
 
@@ -157,6 +210,51 @@ export default {
   },
 
   methods: {
+    send() {
+      console.log("Send message: " + this.send_message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = { name: this.send_message };
+        console.log(JSON.stringify(msg));
+        this.stompClient.send("/app/hello", JSON.stringify(msg), {});
+      } else{
+        console.log('Not connected to server! ');
+      }
+    },
+
+    async connect() {
+      this.socket = new SockJS("http://localhost:8090/gs-guide-websocket");
+      this.stompClient = Stomp.over(this.socket);
+      this.showConnectLoader = true;
+      await this.stompClient.connect(
+        {},
+        frame => {
+          console.log(frame);
+          this.stompClient.subscribe("/topic/greetings", tick => {
+            console.log(tick);
+            this.received_messages.push(JSON.parse(tick.body).content);
+          });
+          setTimeout(() => {
+            this.isConnected = true;
+            this.showConnectLoader = false;
+          }, 2000);
+        },
+        error => {
+          console.log(error);
+          this.isConnected = false;
+        }
+      );
+    },
+
+    disconnect() {
+      if (this.stompClient) {
+        this.stompClient.disconnect();
+      }
+      this.isConnected = false;
+    },
+    tickleConnection() {
+      this.isConnected ? this.disconnect() : this.connect();
+    },
+
     startMicOn() {
       this.isDisabled = true;
       return (this.isMicOn = true);
