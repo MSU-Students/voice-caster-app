@@ -240,7 +240,11 @@ export default {
         },
         error => {
           console.log(error);
-          this.isConnected = false;
+          console.log('Cannot connect to server.. plz check port.');
+          setTimeout(() => {
+            this.isConnected = false;
+            this.showConnectLoader = false;
+          }, 2000);
         }
       );
     },
