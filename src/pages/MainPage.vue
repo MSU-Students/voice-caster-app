@@ -144,21 +144,6 @@
                   </div>
                 </q-card-section>
               </q-card>
-              <q-card flat>
-                <q-card-section>
-                  <q-input v-model="send_message" label="What is your name? " />
-                </q-card-section>
-                <q-card-actions align="left">
-                  <q-btn
-                    class="full-width"
-                    @click="send()"
-                    type="submit"
-                    color="primary"
-                    label="send"
-                  >
-                  </q-btn>
-                </q-card-actions>
-              </q-card>
             </div>
           </q-tab-panel>
 
