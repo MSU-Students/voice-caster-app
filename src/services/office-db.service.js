@@ -6,8 +6,8 @@ const officeInfoCollection = "office";
 class OfficeDBService {
   async addOffice() {
     const payload = {
-      code: 444,
-      client: "College Of Business, Administration and Accountancy",
+      code: 222,
+      client: "Office Of The President",
       status: 'Online'
     };
     await officeDB.collection(officeInfoCollection).add(payload);
