@@ -25,15 +25,46 @@
             <div class="q-pa-sm">
               <q-toolbar>
                 <q-btn
-                  icon="dns"
+                  v-if="isConnected == false"
+                  :loading="showConnectLoader"
+                  icon="toggle_on"
                   push
                   rounded
-                  color="white"
-                  text-color="negative"
+                  color="green"
+                  text-color="white"
                   label="connect server"
-                />
-                <div class="q-ml-md">
+                  @click.prevent="connect"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-ios v-if="showConnectLoader" class="on-left" />
+                    Connecting...
+                  </template>
+                </q-btn>
+                <q-btn
+                  v-else
+                  :loading="showConnectLoader"
+                  icon="toggle_off"
+                  push
+                  rounded
+                  color="negative"
+                  text-color="white"
+                  label="Disconnect"
+                  @click.prevent="disconnect"
+                >
+                  <template v-slot:loading>
+                    <q-spinner-ios v-if="showConnectLoader" class="on-left" />
+                    Connecting...
+                  </template>
+                </q-btn>
+                <div v-if="isConnected == false" class="q-ml-md">
                   <q-badge outline color="red" label="Not connected"></q-badge>
+                </div>
+                <div v-else class="q-ml-md">
+                  <q-badge
+                    outline
+                    color="dark"
+                    label="Conncected to Server"
+                  ></q-badge>
                 </div>
                 <q-space />
                 <div class="text-overline">
@@ -129,6 +160,8 @@
 import TableClient from "src/components/TableClient.vue";
 import audioRecorderService from "../services/audio-recorder.service.js";
 import microphoneSettingService from "../services/microphone-setting.service.js";
+import serverConnectionService from "../services/server-connection.service.js"
+
 export default {
   name: "PopupPage",
   components: { TableClient },
@@ -145,7 +178,11 @@ export default {
       microphones: [],
       selectedDevice: "",
       audioStreamSelected: undefined,
-      isDisabled: false
+      isDisabled: false,
+      received_messages: [],
+      send_message: null,
+      isConnected: false,
+      showConnectLoader: false
     };
   },
 
@@ -157,6 +194,16 @@ export default {
   },
 
   methods: {
+    async connect() {
+      await serverConnectionService.connect();
+      this.isConnected = true;
+    },
+
+    disconnect() {
+      serverConnectionService.disconnect();
+      this.isConnected = false;
+    },
+
     startMicOn() {
       this.isDisabled = true;
       return (this.isMicOn = true);
