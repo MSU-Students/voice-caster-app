@@ -141,6 +141,8 @@
                         Click Test Mic to make sure others can hear you!
                       </q-tooltip>
                     </q-btn>
+                    <q-btn label="Send Message" size="12px" icon="message" rounded>
+                    </q-btn>
                   </div>
                 </q-card-section>
               </q-card>
