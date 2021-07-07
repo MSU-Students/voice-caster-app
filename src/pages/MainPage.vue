@@ -187,6 +187,7 @@ export default {
   },
 
   async created() {
+    serverConnectionService.send("I am from voice");
     const devices = await microphoneSettingService.devices();
     this.microphones = devices;
     console.log("devices: ", devices);

@@ -3,13 +3,13 @@ import Stomp from "webstomp-client";
 
 class ServerConnectionService {
   async connect() {
-    this.socket = new SockJS("http://localhost:8090/gs-guide-websocket");
+    this.socket = new SockJS("http://192.168.1.244:9000/ws");
     this.stompClient = Stomp.over(this.socket);
     await this.stompClient.connect(
       {},
       frame => {
         console.log(frame);
-        this.stompClient.subscribe("/topic/greetings", tick => {
+        this.stompClient.subscribe("/topic/announcements", tick => {
           console.log(tick);
         });
       },
@@ -24,7 +24,7 @@ class ServerConnectionService {
     if (this.stompClient && this.stompClient.connected) {
       const msg = { name: message };
       console.log(JSON.stringify(msg));
-      await this.stompClient.send("/app/hello", JSON.stringify(msg), {});
+      await this.stompClient.send("/app/information", JSON.stringify(msg), {});
     } else{
       console.log('Not connected to server! ');
     }
