@@ -1,25 +1,37 @@
 class AudioRecorderService {
   async recordAudio() {
-    await navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorder.start();
-      const audioChunks = [];
+    return new Promise(async resolve => {
+      await navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(stream => {
+          const mediaRecorder = new MediaRecorder(stream);
+          mediaRecorder.start();
+          const audioChunks = [];
 
-      mediaRecorder.addEventListener("dataavailable", event => {
-        audioChunks.push(event.data);
-        console.log("recording: ", audioChunks);
-      });
+          mediaRecorder.addEventListener("dataavailable", event => {
+            audioChunks.push(event.data);
+          });
 
-      mediaRecorder.addEventListener("stop", () => {
-        const audioBlob = new Blob(audioChunks);
-        const audioURL = URL.createObjectURL(audioBlob);
-        const audio = new Audio(audioURL);
-        audio.play();
-      });
+          mediaRecorder.addEventListener("stop", () => {
+            const audioBlob = new Blob(audioChunks);
 
-      setTimeout(() => {
-        mediaRecorder.stop();
-      }, 3000);
+            const audioURL = URL.createObjectURL(audioBlob);
+            const audio = new Audio(audioURL);
+            audio.play();
+
+            var reader = new FileReader();
+            var base64data;
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = function() {
+              base64data = reader.result;
+              resolve(base64data);
+            };
+          });
+
+          setTimeout(() => {
+            mediaRecorder.stop();
+          }, 3000);
+        });
     });
   }
 }
