@@ -7,7 +7,16 @@ let msg = undefined;
 class ServerConnectionService {
   async connect() {
     return new Promise((resolve, reject) => {
-      let socket = new SockJS("http://192.168.43.140:9000/ws");
+      let socket = null;
+      if (navigator.onLine) {
+        // if online
+        console.log("online");
+        socket = new SockJS("https://voice-serve.herokuapp.com/ws");
+      } else {
+        // if offline
+        console.log("offline");
+        socket = new SockJS("http://192.168.43.140:9000/ws");
+      }
       stompClient = Stomp.over(socket);
       stompClient.connect(
         {},
