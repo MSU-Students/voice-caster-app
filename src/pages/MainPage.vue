@@ -95,7 +95,7 @@
                     round
                     color="green-6"
                     icon="mic"
-                    @click="startMicOn()"
+                    @click="sendMsg()"
                   />
                   <div class="row justify-center text-overline">
                     {{ statusMessage.mic_off }}
@@ -162,7 +162,7 @@
 import TableClient from "src/components/TableClient.vue";
 import audioRecorderService from "../services/audio-recorder.service.js";
 import microphoneSettingService from "../services/microphone-setting.service.js";
-import serverConnectionService from "../services/server-connection.service.js"
+import serverConnectionService from "../services/server-connection.service.js";
 
 export default {
   name: "PopupPage",
@@ -191,19 +191,26 @@ export default {
   async created() {
     const devices = await microphoneSettingService.devices();
     this.microphones = devices;
-    console.log("devices: ", devices);
     this.selectedDevice = devices[0];
   },
 
   methods: {
     async connect() {
-      await serverConnectionService.connect();
-      this.isConnected = true;
+      const connected = await serverConnectionService.connect();
+      if (connected == "CONNECTED") {
+        this.isConnected = connected;
+      } else {
+        this.isConnected = false;
+      }
     },
 
     async disconnect() {
       await serverConnectionService.disconnect();
       this.isConnected = false;
+    },
+
+    sendMsg(val) {
+      serverConnectionService.send(val);
     },
 
     startMicOn() {
@@ -221,9 +228,9 @@ export default {
     },
 
     async testMic() {
-      await audioRecorderService.recordAudio().then(() => {
-        this.showAudioLoader = true;
-      });
+      const recordStream = await audioRecorderService.recordAudio();
+      this.showAudioLoader = true;
+      this.sendMsg(recordStream);
       setTimeout(() => {
         this.showAudioLoader = false;
       }, 3000);

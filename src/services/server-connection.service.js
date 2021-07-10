@@ -1,32 +1,48 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 
+let stompClient = null;
+let msg = undefined;
+
 class ServerConnectionService {
   async connect() {
-    this.socket = new SockJS("http://192.168.1.244:9000/ws");
-    this.stompClient = Stomp.over(this.socket);
-    await this.stompClient.connect(
-      {},
-      frame => {
-        console.log(frame);
-        this.stompClient.subscribe("/topic/announcements", tick => {
-          console.log(tick);
-        });
-      },
-      error => {
-        console.log(error);
-        console.log("Cannot connect to server..");
+    return new Promise((resolve, reject) => {
+      let socket = null;
+      if (navigator.onLine) {
+        // if online
+        console.log("online");
+        socket = new SockJS("https://voice-serve.herokuapp.com/ws");
+      } else {
+        // if offline
+        console.log("offline");
+        socket = new SockJS("http://192.168.43.140:9000/ws");
       }
-    );
+      stompClient = Stomp.over(socket);
+      stompClient.connect(
+        {},
+        frame => {
+          resolve(frame.command);
+          stompClient.subscribe("/topic/announcements", tick => {
+            console.log(tick);
+          });
+        },
+        error => {
+          reject(error);
+          console.log(error);
+          console.log("Cannot connect to server..");
+        }
+      );
+    });
   }
-  async send(message) {
-    console.log("Send message: " + message);
-    if (this.stompClient && this.stompClient.connected) {
-      const msg = { name: message };
-      console.log(JSON.stringify(msg));
-      await this.stompClient.send("/app/information", JSON.stringify(msg), {});
-    } else{
-      console.log('Not connected to server! ');
+  async send(val) {
+    msg = { name: val };
+    if (stompClient) {
+      const res = await stompClient.send(
+        "/app/information",
+        JSON.stringify(msg),
+        {}
+      );
+      console.log("hello", res);
     }
   }
   async disconnect() {
@@ -35,7 +51,7 @@ class ServerConnectionService {
     }
   }
   async tickleConnection() {
-    await this.isConnected ? this.disconnect() : this.connect();
+    (await this.isConnected) ? this.disconnect() : this.connect();
   }
 }
 
