@@ -95,7 +95,7 @@
                     round
                     color="green-6"
                     icon="mic"
-                    @click="sendMsg()"
+                    @click="startMicOn()"
                   />
                   <div class="row justify-center text-overline">
                     {{ statusMessage.mic_off }}
