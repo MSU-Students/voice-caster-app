@@ -141,6 +141,8 @@
                         Click Test Mic to make sure others can hear you!
                       </q-tooltip>
                     </q-btn>
+                    <q-btn label="Send Message" size="12px" icon="message" rounded @click.prevent="sendMessage">
+                    </q-btn>
                   </div>
                 </q-card-section>
               </q-card>
@@ -187,7 +189,6 @@ export default {
   },
 
   async created() {
-    serverConnectionService.send("I am from voice");
     const devices = await microphoneSettingService.devices();
     this.microphones = devices;
     this.selectedDevice = devices[0];
@@ -203,8 +204,8 @@ export default {
       }
     },
 
-    disconnect() {
-      serverConnectionService.disconnect();
+    async disconnect() {
+      await serverConnectionService.disconnect();
       this.isConnected = false;
     },
 
@@ -215,6 +216,10 @@ export default {
     startMicOn() {
       this.isDisabled = true;
       return (this.isMicOn = true);
+    },
+
+    async sendMessage() {
+      await serverConnectionService.send("Good Day! This is from voice-caster!");
     },
 
     startMicOff() {
