@@ -25,27 +25,23 @@
             <div class="q-pa-sm">
               <q-toolbar>
                 <q-btn
+                  class="btn-fixed-width"
+                  size="10px"
                   v-if="isConnected == false"
                   :loading="showConnectLoader"
-                  icon="toggle_on"
-                  push
-                  rounded
                   color="green"
                   text-color="white"
-                  label="connect server"
+                  label="connect"
                   @click.prevent="connect"
                 >
                   <template v-slot:loading>
-                    <q-spinner-ios v-if="showConnectLoader" class="on-left" />
                     Connecting...
                   </template>
                 </q-btn>
                 <q-btn
                   v-else
                   :loading="showConnectLoader"
-                  icon="toggle_off"
-                  push
-                  rounded
+                  size="10px"
                   color="negative"
                   text-color="white"
                   label="Disconnect"
@@ -61,15 +57,18 @@
                 </div>
                 <div v-else class="q-ml-md">
                   <q-badge
-                    outline
-                    color="dark"
+                    color="green"
                     label="Conncected to Server"
                   ></q-badge>
                 </div>
                 <q-space />
-                <div class="text-overline">
+                <div v-if="isMicOn == false" class="text-overline">
                   Status:
-                  <q-badge color="yellow-14" label="On Air"></q-badge>
+                  <q-badge color="dark" label="Off Air"></q-badge>
+                </div>
+                <div v-else class="text-overline">
+                  Status:
+                  <q-badge color="yellow-14" label="On Air"> </q-badge>
                 </div>
               </q-toolbar>
               <q-card class="my-card q-pt-xs" flat>
@@ -89,6 +88,7 @@
 
                 <q-card-section v-else class="text-center">
                   <q-btn
+                    :disable="isDisabledMic"
                     outline
                     class="shadow-1"
                     size="35px"
@@ -141,7 +141,13 @@
                         Click Test Mic to make sure others can hear you!
                       </q-tooltip>
                     </q-btn>
-                    <q-btn label="Send Message" size="12px" icon="message" rounded @click.prevent="sendMessage">
+                    <q-btn
+                      label="Send Message"
+                      size="12px"
+                      icon="message"
+                      rounded
+                      @click.prevent="sendMessage"
+                    >
                     </q-btn>
                   </div>
                 </q-card-section>
@@ -163,6 +169,7 @@ import TableClient from "src/components/TableClient.vue";
 import audioRecorderService from "../services/audio-recorder.service.js";
 import microphoneSettingService from "../services/microphone-setting.service.js";
 import serverConnectionService from "../services/server-connection.service.js";
+import audioStreamingService from "../services/audio-streaming.service.js";
 
 export default {
   name: "PopupPage",
@@ -181,6 +188,7 @@ export default {
       selectedDevice: "",
       audioStreamSelected: undefined,
       isDisabled: false,
+      isDisabledMic: true,
       received_messages: [],
       send_message: null,
       isConnected: false,
@@ -196,44 +204,57 @@ export default {
 
   methods: {
     async connect() {
+      this.showConnectLoader = true;
       const connected = await serverConnectionService.connect();
-      if (connected == "CONNECTED") {
-        this.isConnected = connected;
+      if (connected.type != "close") {
+        setTimeout(() => {
+          this.notifyMessage("Connected to the server", "green-6", "check");
+          this.isConnected = true;
+          this.isDisabledMic = false;
+          this.showConnectLoader = false;
+        }, 2000);
       } else {
-        this.isConnected = false;
+        console.log('sorry..');
+        setTimeout(() => {
+          this.isConnected = false;
+          this.showConnectLoader = false;
+          this.notifyMessage("ERROR! Can't connect to the server.", "red", "error");
+        }, 2000);
       }
     },
 
     async disconnect() {
       await serverConnectionService.disconnect();
       this.isConnected = false;
+      this.isDisabledMic = true;
     },
 
-    sendMsg(val) {
+    sendAudioToServer(val) {
       serverConnectionService.send(val);
     },
 
-    startMicOn() {
+    async startMicOn() {
       this.isDisabled = true;
-      return (this.isMicOn = true);
+      this.isMicOn = true;
+      const audio = await audioStreamingService.start();
+      this.sendAudioToServer(audio);
     },
 
     async sendMessage() {
-      await serverConnectionService.send("Good Day! This is from voice-caster!");
+      await serverConnectionService.send(
+        "Good Day! This is from voice-caster!"
+      );
     },
 
-    startMicOff() {
+    async startMicOff() {
       this.isDisabled = false;
-      return (this.isMicOn = false);
+      this.isMicOn = false;
     },
 
     async testMic() {
-      const recordStream = await audioRecorderService.recordAudio();
       this.showAudioLoader = true;
-      this.sendMsg(recordStream);
-      setTimeout(() => {
-        this.showAudioLoader = false;
-      }, 3000);
+      const recordStream = await audioRecorderService.recordAudio();
+      this.showAudioLoader = false;
     },
 
     async setConnectedDevices(device) {
@@ -241,6 +262,15 @@ export default {
         device
       );
       this.audioStreamSelected = selectedDevice;
+    },
+    notifyMessage(msg, color, icon) {
+      this.$q.notify({
+        message: msg,
+        color: color,
+        timeout: 1000,
+        icon: icon,
+        position: "center"
+      });
     }
   }
 };
