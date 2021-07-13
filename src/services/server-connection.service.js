@@ -1,33 +1,25 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
-
-let stompClient = null;
-let msg = undefined;
-
 class ServerConnectionService {
   async connect() {
     return new Promise((resolve, reject) => {
       let socket = null;
-      if (navigator.onLine) {
-        // if online
-        console.log("online");
-        socket = new SockJS("https://voice-serve.herokuapp.com/ws");
-      } else {
-        // if offline
-        console.log("offline");
-        socket = new SockJS("http://192.168.43.140:9000/ws");
-      }
-      stompClient = Stomp.over(socket);
-      stompClient.connect(
+      const live = "https://voice-serve.herokuapp.com/ws";
+      const ip = "192.168.134.149";
+      const port = "9000";
+      const dev = `http://${ip}:${port}/ws`; 
+      this.socket = new SockJS(dev);
+      this.stompClient = Stomp.over(this.socket);
+      this.stompClient.connect(
         {},
         frame => {
-          resolve(frame.command);
-          stompClient.subscribe("/topic/announcements", tick => {
+          resolve(frame);
+          this.stompClient.subscribe("/topic/announcements", tick => {
             console.log(tick);
           });
         },
         error => {
-          reject(error);
+          resolve(error);
           console.log(error);
           console.log("Cannot connect to server..");
         }
@@ -35,9 +27,9 @@ class ServerConnectionService {
     });
   }
   async send(val) {
-    msg = { name: val };
-    if (stompClient) {
-      const res = await stompClient.send(
+    const msg = { name: val };
+    if (this.stompClient) {
+      const res = await this.stompClient.send(
         "/app/information",
         JSON.stringify(msg),
         {}
