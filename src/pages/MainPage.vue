@@ -236,8 +236,10 @@ export default {
     async startMicOn() {
       this.isDisabled = true;
       this.isMicOn = true;
-      const audio = await audioStreamingService.start();
-      this.sendAudioToServer(audio);
+       audioStreamingService.start((audio) => {
+         //5seconds
+         this.sendAudioToServer(audio);
+       });
     },
 
     async sendMessage() {
@@ -247,8 +249,10 @@ export default {
     },
 
     async startMicOff() {
+      await audioStreamingService.stop();
       this.isDisabled = false;
       this.isMicOn = false;
+      
     },
 
     async testMic() {

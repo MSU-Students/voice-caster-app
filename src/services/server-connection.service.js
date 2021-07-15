@@ -1,11 +1,12 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import officeDBService from "../services/office-db.service.js";
 class ServerConnectionService {
   async connect() {
     return new Promise((resolve, reject) => {
       let socket = null;
       const live = "https://voice-serve.herokuapp.com/ws";
-      const ip = "192.168.134.149";
+      const ip = "192.168.43.149";
       const port = "9000";
       const dev = `http://${ip}:${port}/ws`; 
       this.socket = new SockJS(dev);
@@ -16,6 +17,11 @@ class ServerConnectionService {
           resolve(frame);
           this.stompClient.subscribe("/topic/announcements", tick => {
             console.log(tick);
+          });
+          this.stompClient.subscribe("/topic/register", tick => {
+            let clients = JSON.parse(tick.body);
+            console.log("Client: ", clients);
+            officeDBService.addOffice(clients);
           });
         },
         error => {
@@ -29,12 +35,11 @@ class ServerConnectionService {
   async send(val) {
     const msg = { name: val };
     if (this.stompClient) {
-      const res = await this.stompClient.send(
+      await this.stompClient.send(
         "/app/information",
         JSON.stringify(msg),
         {}
       );
-      console.log("hello", res);
     }
   }
   async disconnect() {
