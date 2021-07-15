@@ -4,12 +4,7 @@ officeDB.config.debug = false;
 const officeInfoCollection = "office";
 
 class OfficeDBService {
-  async addOffice() {
-    const payload = {
-      code: 222,
-      client: "Office Of The President",
-      status: 'Online'
-    };
+  async addOffice(payload) {
     await officeDB.collection(officeInfoCollection).add(payload);
     console.log("first added!");
   }
