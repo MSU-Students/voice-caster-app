@@ -3,7 +3,7 @@ class AudioStreamingService {
     console.log("starting...");
     await navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
       this.mediaRecorder = new MediaRecorder(stream);
-      const duration = 5000;
+      const duration = 3000;
       this.mediaRecorder.start(duration);
       const audioChunks = [];
 
@@ -12,6 +12,7 @@ class AudioStreamingService {
         var reader = new FileReader();
         reader.readAsDataURL(audioBlob);
         reader.onloadend = function() {
+          console.log(reader);
           callback(reader.result);
         };
       });
