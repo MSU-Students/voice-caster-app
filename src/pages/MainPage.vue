@@ -229,17 +229,10 @@ export default {
       this.isDisabled = true;
       this.isMicOn = true;
        audioStreamingService.start((audio) => {
-         //5seconds
          this.sendAudioToServer(audio);
        });
     },
-
-    async sendMessage() {
-      await serverConnectionService.send(
-        "Good Day! This is from voice-caster!"
-      );
-    },
-
+    
     async startMicOff() {
       await audioStreamingService.stop();
       this.isDisabled = false;

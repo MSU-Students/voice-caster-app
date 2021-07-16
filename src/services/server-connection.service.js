@@ -11,16 +11,17 @@ class ServerConnectionService {
       const dev = `http://${ip}:${port}/ws`; 
       this.socket = new SockJS(dev);
       this.stompClient = Stomp.over(this.socket);
+      this.stompClient.debug = () => {};
       this.stompClient.connect(
         {},
         frame => {
           resolve(frame);
           this.stompClient.subscribe("/topic/announcements", tick => {
-            console.log(tick);
+           
           });
           this.stompClient.subscribe("/topic/register", tick => {
             let clients = JSON.parse(tick.body);
-            console.log("Client: ", clients);
+           
             officeDBService.addOffice(clients);
           });
         },
@@ -30,6 +31,7 @@ class ServerConnectionService {
           console.log("Cannot connect to server..");
         }
       );
+      
     });
   }
   async send(val) {
