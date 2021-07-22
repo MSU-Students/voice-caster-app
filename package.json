@@ -2,7 +2,7 @@
   "name": "voicecaster-app",
   "version": "0.0.1",
   "description": "A voice-based application",
-  "productName": "VoiceCaster App",
+  "productName": "Voice Caster App",
   "author": "Omair A. Mangondaya <67724946+omairalamada@users.noreply.github.com>",
   "private": true,
   "scripts": {
