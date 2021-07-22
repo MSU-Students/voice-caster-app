@@ -6,7 +6,7 @@ class ServerConnectionService {
     return new Promise((resolve, reject) => {
       let socket = null;
       const live = "https://voice-serve.herokuapp.com/ws";
-      const ip = "192.168.43.149";
+      const ip = "192.168.95.149";
       const port = "9000";
       const dev = `http://${ip}:${port}/ws`; 
       this.socket = new SockJS(dev);

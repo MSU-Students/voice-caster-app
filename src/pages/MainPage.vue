@@ -228,7 +228,7 @@ export default {
     async startMicOn() {
       this.isDisabled = true;
       this.isMicOn = true;
-       audioStreamingService.start((audio) => {
+       audioStreamingService.start2((audio) => {
          this.sendAudioToServer(audio);
        });
     },
