@@ -6,18 +6,8 @@
         :data="clientList"
         :columns="columns"
         row-key="client"
-        selection="multiple"
-        :selected.sync="selected"
         :filter="filter"
-      >
-       <template v-slot:header-selection="scope">
-          <q-toggle v-model="scope.selected" />
-        </template>
-
-        <template v-slot:body-selection="scope">
-          <q-toggle v-model="scope.selected" />
-        </template>
-        
+      > 
         <template v-slot:top-right>
           <q-input rounded outlined dense debounce="300" v-model="filter" placeholder="Search colleges/offices...">
             <template v-slot:append>
@@ -41,7 +31,6 @@ export default {
   data() {
     return {
       filter: '',
-      selected: [],
       columns: [
         { name: 'client', required: true, label: 'Colleges/Offices', align: 'left', field: 'client', sortable: true, headerClasses: 'bg-cyan-11 text-black'},
         { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
@@ -53,7 +42,6 @@ export default {
   },
 
   async mounted() {
-      //officeDBService.addOffice();
       const office = await officeDBService.displayOffices();
       this.clientList = office;
   },

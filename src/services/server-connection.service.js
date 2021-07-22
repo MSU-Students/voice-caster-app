@@ -2,12 +2,11 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import officeDBService from "../services/office-db.service.js";
 class ServerConnectionService {
-  async connect() {
+  async connect(ip, port) {
     return new Promise((resolve, reject) => {
       let socket = null;
       const live = "https://voice-serve.herokuapp.com/ws";
-      const ip = "192.168.95.149";
-      const port = "9000";
+      console.log('IP:', ip, 'Port: ', port);
       const dev = `http://${ip}:${port}/ws`; 
       this.socket = new SockJS(dev);
       this.stompClient = Stomp.over(this.socket);

@@ -56,10 +56,7 @@
                   <q-badge outline color="red" label="Not connected"></q-badge>
                 </div>
                 <div v-else class="q-ml-md">
-                  <q-badge
-                    color="green"
-                    label="Conncected to Server"
-                  ></q-badge>
+                  <q-badge color="green" label="Conncected to Server"></q-badge>
                 </div>
                 <q-space />
                 <div v-if="isMicOn == false" class="text-overline">
@@ -184,10 +181,13 @@ export default {
       received_messages: [],
       send_message: null,
       isConnected: false,
-      showConnectLoader: false
+      showConnectLoader: false,
+      server_ip: {}
     };
   },
-
+  mounted() {
+    this.getIP();
+  },
   async created() {
     const devices = await microphoneSettingService.devices();
     this.microphones = devices;
@@ -197,7 +197,8 @@ export default {
   methods: {
     async connect() {
       this.showConnectLoader = true;
-      const connected = await serverConnectionService.connect();
+      this.getIP();
+      const connected = await serverConnectionService.connect(this.server_ip.ipAddress, this.server_ip.port);
       if (connected.type != "close") {
         setTimeout(() => {
           this.notifyMessage("Connected to the server", "green-6", "check");
@@ -206,11 +207,14 @@ export default {
           this.showConnectLoader = false;
         }, 2000);
       } else {
-        console.log('sorry..');
         setTimeout(() => {
           this.isConnected = false;
           this.showConnectLoader = false;
-          this.notifyMessage("ERROR! Can't connect to the server.", "red", "error");
+          this.notifyMessage(
+            "ERROR! Can't connect to the server.",
+            "red",
+            "error"
+          );
         }, 2000);
       }
     },
@@ -228,16 +232,15 @@ export default {
     async startMicOn() {
       this.isDisabled = true;
       this.isMicOn = true;
-       audioStreamingService.start2((audio) => {
-         this.sendAudioToServer(audio);
-       });
+      audioStreamingService.start2(audio => {
+        this.sendAudioToServer(audio);
+      });
     },
-    
+
     async startMicOff() {
       await audioStreamingService.stop();
       this.isDisabled = false;
       this.isMicOn = false;
-      
     },
 
     async testMic() {
@@ -251,6 +254,10 @@ export default {
         device
       );
       this.audioStreamSelected = selectedDevice;
+    },
+    async getIP() {
+      const ip = await serverConnectionService.getIpAddress();
+      this.server_ip = ip;
     },
     notifyMessage(msg, color, icon) {
       this.$q.notify({

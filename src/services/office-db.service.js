@@ -12,7 +12,6 @@ class OfficeDBService {
   async displayOffices() {
     try {
       const offices = await officeDB.collection(officeInfoCollection).get();
-      console.log(offices);
       return offices;
     } catch (e){
       console.log("no offices found!");
