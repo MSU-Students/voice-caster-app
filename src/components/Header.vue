@@ -21,7 +21,6 @@
     </q-toolbar>
     <q-dialog
       v-model="dialog"
-      persistent
       transition-show="scale"
       transition-hide="scale"
     >
@@ -74,7 +73,7 @@
   </q-header>
 </template>
 <script>
-import serverConnectionService from "../services/server-connection.service.js"
+import serverConnectionService from "../services/server-connection.service.js";
 export default {
   data() {
     return {
@@ -90,5 +89,26 @@ export default {
   created() {
     serverConnectionService.isItemExist("server_ip");
   },
+  methods: {
+    async save() {
+      console.log("save!");
+      this.showSaveLoader = true;
+      await serverConnectionService.addServerIP("server_ip", this.server).then(() => {
+        setTimeout(() => {
+          this.showSaveLoader = false;
+          this.notifyMessage("IP Address and Port Saved.", "primary");
+        }, 2000);
+      });
+    },
+    notifyMessage(msg, color) {
+      this.$q.notify({
+        message: msg,
+        color: color,
+        timeout: 1000,
+        icon: "check_circle_outline",
+        position: "center"
+      });
+    }
+  }
 };
 </script>

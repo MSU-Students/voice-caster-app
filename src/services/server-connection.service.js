@@ -52,18 +52,22 @@ class ServerConnectionService {
   async tickleConnection() {
     (await this.isConnected) ? this.disconnect() : this.connect();
   }
-  async isItemExist(itemName) {
+  isItemExist(itemName) {
     if (localStorage.getItem(itemName) !== null) {
-      console.log(`IP exist`);
+      console.log(`Server IP found!`);
     } else {
-      console.log(`ip not found`);
+      console.log(`Server IP not found!`);
       let ip = JSON.stringify("");
       this.addServerIP("server_ip", ip);
     }
   }
   async addServerIP(key, val) {
     let ip = JSON.stringify(val);
-    return await localStorage.setItem(key, ip);
+    return localStorage.setItem(key, ip);
+  }
+  async getIpAddress() {
+    let ip = JSON.parse(localStorage.getItem("server_ip"));
+    return await ip;
   }
 }
 
