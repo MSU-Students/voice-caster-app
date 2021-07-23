@@ -1,46 +1,44 @@
 class AudioStreamingService {
-  // async start(callback) {
-  //   console.log("starting...");
-  //   await navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-  //     this.mediaRecorder = new MediaRecorder(stream);
-  //     const duration = 3000;
-  //     this.mediaRecorder.start(duration);
-  //     const audioChunks = [];
 
-  //     this.mediaRecorder.addEventListener("dataavailable", event => {
-  //       const audioBlob = new Blob([event.data]);
-  //       console.log('omair:', audioBlob);
-  //       var reader = new FileReader();
-  //       reader.readAsDataURL(audioBlob);
-  //       reader.onloadend = function() {
-  //         console.log(reader);
-  //         callback(reader.result);
-  //       };
-  //     });
-  //   });
-  // }
-  async stop() {
-    const stop = await this.mediaRecorder.stop();
-    console.log("stop: ", stop);
-  }
-  blobs = [];
   mediaRecorder = undefined;
   async start2(callback) {
-    this.blobs =[];
     const self = this;
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     var mediaRecorder = new MediaRecorder(stream);
     self.mediaRecorder = mediaRecorder;
-    const duration = 1000;
+    const duration = 500;
     mediaRecorder.start(duration);
     mediaRecorder.ondataavailable = function(e) {
         var fileReader = new FileReader();
         fileReader.onload = function() {
-          //console.log('blob: ', fileReader);
           callback(fileReader.result);
         };
         fileReader.readAsDataURL(e.data);
     }
+  }
+
+  async stop() {
+    const self = this;
+    await self.mediaRecorder.stop();
+    console.log("stop ");
+  }
+  
+  async pause() {
+    const self = this;
+    if(this.mediaRecorder.state === "recording") {
+      await self.mediaRecorder.pause();
+      console.log('paused.');
+      // recording paused
+    }
+  }
+
+  async resume() {
+    const self = this;
+    if(self.mediaRecorder.state === "paused") {
+      await self.mediaRecorder.resume();
+      console.log('resume recording..');
+      // recording paused
+    } 
   }
 
  stop2() {

@@ -26,6 +26,7 @@
               <q-toolbar>
                 <q-btn
                   class="btn-fixed-width"
+                  rounded
                   size="10px"
                   v-if="isConnected == false"
                   :loading="showConnectLoader"
@@ -40,6 +41,7 @@
                 </q-btn>
                 <q-btn
                   v-else
+                  rounded
                   :loading="showConnectLoader"
                   size="10px"
                   color="negative"
@@ -56,39 +58,97 @@
                   <q-badge outline color="red" label="Not connected"></q-badge>
                 </div>
                 <div v-else class="q-ml-md">
-                  <q-badge color="green" label="Conncected to Server"></q-badge>
+                  <q-badge outline color="green" label="Conncected"></q-badge>
                 </div>
                 <q-space />
                 <div v-if="isMicOn == false" class="text-overline">
-                  Status:
                   <q-badge color="dark" label="Off Air"></q-badge>
                 </div>
                 <div v-else class="text-overline">
-                  Status:
                   <q-badge color="yellow-14" label="On Air"> </q-badge>
                 </div>
               </q-toolbar>
+
               <q-card class="my-card q-pt-xs" flat>
-                <q-card-section v-if="isMicOn" class="text-center">
-                  <q-btn
-                    class="shadow-24"
-                    size="35px"
-                    round
-                    color="red-6"
-                    icon="mic_off"
-                    @click="startMicOff()"
-                  />
-                  <div class="row justify-center text-overline">
-                    {{ statusMessage.mic_on }}
+                <div v-if="isMicOn" class="text-center">
+                  <div class="row q-gutter-xl justify-center">
+                    <div class="">
+                      <q-btn
+                        class="shadow-24"
+                        size="30px"
+                        round
+                        color="red-6"
+                        icon="mic_off"
+                        @click="startMicOff()"
+                      >
+                        <q-tooltip
+                          content-class="bg-red-5 text-white"
+                          anchor="top middle"
+                          self="bottom middle"
+                        >
+                          Are you sure, you want to stop broadcasting?
+                        </q-tooltip>
+                      </q-btn>
+                      <div class="q-pt-xs text-weight-thin">
+                        {{ statusMessage.mic_on }}
+                      </div>
+                    </div>
+
+                    <div class="">
+                      <div v-if="isPause == false">
+                        <q-btn
+                          round
+                          outline
+                          class="text-red shadow-1"
+                          color="white"
+                          icon="pause"
+                          size="30px"
+                          @click="pause()"
+                        >
+                          <q-tooltip
+                            content-class="bg-primary text-white"
+                            anchor="top middle"
+                            self="bottom middle"
+                          >
+                            Click to pause broadcasting.
+                          </q-tooltip>
+                        </q-btn>
+
+                        <div class=" text-center q-pt-xs text-weight-thin ">
+                          PAUSE
+                        </div>
+                      </div>
+                      <div v-else>
+                        <q-btn
+                          round
+                          outline
+                          size="30px"
+                          class="text-green shadow-1"
+                          icon="play_arrow"
+                          @click="resume()"
+                        >
+                        <q-tooltip
+                            content-class="bg-primary text-white"
+                            anchor="top middle"
+                            self="bottom middle"
+                          >
+                            Click to resume broadcasting..
+                          </q-tooltip>
+                        </q-btn>
+                        <div class=" text-center q-pt-xs  text-weight-thin">
+                          RESUME
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </q-card-section>
+                </div>
 
                 <q-card-section v-else class="text-center">
                   <q-btn
                     :disable="isDisabledMic"
                     outline
                     class="shadow-1"
-                    size="35px"
+                    size="30px"
                     round
                     color="green-6"
                     icon="mic"
@@ -98,6 +158,7 @@
                     {{ statusMessage.mic_off }}
                   </div>
                 </q-card-section>
+
                 <q-card-section>
                   <div class="text-subtitle2 text-blue-grey-9 q-pb-sm">
                     Microphone:
@@ -182,7 +243,8 @@ export default {
       send_message: null,
       isConnected: false,
       showConnectLoader: false,
-      server_ip: {}
+      server_ip: {},
+      isPause: false
     };
   },
   mounted() {
@@ -195,10 +257,21 @@ export default {
   },
 
   methods: {
+    async pause() {
+      this.isPause = true;
+      await audioStreamingService.pause();
+    },
+    async resume() {
+      this.isPause = false;
+      await audioStreamingService.resume();
+    },
     async connect() {
       this.showConnectLoader = true;
       this.getIP();
-      const connected = await serverConnectionService.connect(this.server_ip.ipAddress, this.server_ip.port);
+      const connected = await serverConnectionService.connect(
+        this.server_ip.ipAddress,
+        this.server_ip.port
+      );
       if (connected.type != "close") {
         setTimeout(() => {
           this.notifyMessage("Connected to the server", "green-6", "check");
@@ -238,6 +311,7 @@ export default {
     },
 
     async startMicOff() {
+      this.isPause = false;
       await audioStreamingService.stop();
       this.isDisabled = false;
       this.isMicOn = false;
