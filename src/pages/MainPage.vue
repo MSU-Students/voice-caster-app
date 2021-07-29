@@ -120,12 +120,28 @@
                     </div>
                     <div class="q-pt-sm">
                       <q-btn-group outline rounded spread>
-                        <q-btn color="blue-6" label="Notice Alert" icon="campaign" />
                         <q-btn
+                          :loading="showNoticeLoader"
+                          color="blue-6"
+                          label="Notice Alert"
+                          icon="campaign"
+                          @click="playAnnounce()"
+                        >
+                          <template v-slot:loading>
+                            Playing...
+                          </template>
+                        </q-btn>
+                        <q-btn
+                          :loading="showSoundLoader"
                           color="red"
                           label="Emergency Alert"
                           icon="warning"
-                        />
+                          @click="playAlert()"
+                        >
+                          <template v-slot:loading>
+                            Playing...
+                          </template>
+                        </q-btn>
                       </q-btn-group>
                     </div>
                   </div>
@@ -216,10 +232,8 @@ export default {
         mic_on: "Click to STOP",
         mic_off: "Press to Start Announce "
       },
-      sounds: {
-        notice: "src/assets/audio/Alarm.mp3",
-        emergency: "src/assets/audio/notice.mp3"
-      },
+      showSoundLoader: false,
+      showNoticeLoader: false,
       tab: "broadcast",
       status: "Press to Start Announce",
       isMicOn: false,
@@ -324,6 +338,18 @@ export default {
     async getIP() {
       const ip = await serverConnectionService.getIpAddress();
       this.server_ip = ip;
+    },
+    async playAlert() {
+      const audio = require("src/assets/sounds/Alarm.mp3");
+      this.showSoundLoader = true;
+      await audioRecorderService.playEmergency(audio);
+      this.showSoundLoader = audio.playEnded;
+    },
+    async playAnnounce() {
+      const audio = require("src/assets/sounds/notice.mp3");
+      this.showNoticeLoader = true;
+      await audioRecorderService.playNotice(audio);
+      this.showNoticeLoader = audio.playEnded;
     },
     notifyMessage(msg, color, icon) {
       this.$q.notify({

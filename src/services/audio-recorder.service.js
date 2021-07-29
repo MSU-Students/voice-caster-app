@@ -1,3 +1,4 @@
+const audio = document.createElement("audio");
 class AudioRecorderService {
   async recordAudio() {
     return new Promise(async resolve => {
@@ -34,7 +35,18 @@ class AudioRecorderService {
         });
     });
   }
-  async playSound(sound) {
+  async playEmergency(sound) {
+    audio.src = sound;
+    await audio.play();
+    return new Promise(resolve => {
+      audio.onended = () => {
+        resolve({
+          playEnded: false
+        });
+      };
+    });
+  }
+  async playNotice(sound) {
     audio.src = sound;
     await audio.play();
     return new Promise(resolve => {
