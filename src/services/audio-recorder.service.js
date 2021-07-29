@@ -34,6 +34,17 @@ class AudioRecorderService {
         });
     });
   }
+  async playSound(sound) {
+    audio.src = sound;
+    await audio.play();
+    return new Promise(resolve => {
+      audio.onended = () => {
+        resolve({
+          playEnded: false
+        });
+      };
+    });
+  }
 }
 
 let audioRecorderService = new AudioRecorderService();
