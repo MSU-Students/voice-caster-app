@@ -216,6 +216,10 @@ export default {
         mic_on: "Click to STOP",
         mic_off: "Press to Start Announce "
       },
+      sounds: {
+        notice: "src/assets/audio/Alarm.mp3",
+        emergency: "src/assets/audio/notice.mp3"
+      },
       tab: "broadcast",
       status: "Press to Start Announce",
       isMicOn: false,
