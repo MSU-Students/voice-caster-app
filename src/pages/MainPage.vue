@@ -69,39 +69,17 @@
                 </div>
               </q-toolbar>
 
-              <q-card class="my-card q-pt-xs" flat>
-                <div v-if="isMicOn" class="text-center">
-                  <div class="row q-gutter-xl justify-center">
-                    <div class="">
-                      <q-btn
-                        class="shadow-24"
-                        size="30px"
-                        round
-                        color="red-6"
-                        icon="mic_off"
-                        @click="startMicOff()"
-                      >
-                        <q-tooltip
-                          content-class="bg-red-5 text-white"
-                          anchor="top middle"
-                          self="bottom middle"
-                        >
-                          Are you sure, you want to stop broadcasting?
-                        </q-tooltip>
-                      </q-btn>
-                      <div class="q-pt-xs text-weight-thin">
-                        {{ statusMessage.mic_on }}
-                      </div>
-                    </div>
-
-                    <div class="">
+              <q-card class="my-card " flat>
+                <q-card-section v-if="isMicOn" class="text-center">
+                  <div >
+                    <div >
                       <div v-if="isPause == false">
                         <q-btn
                           round
                           outline
-                          class="text-red shadow-1"
+                          class="text-red shadow-1 shadow-24"
                           color="white"
-                          icon="pause"
+                          icon="mic_off"
                           size="30px"
                           @click="pause()"
                         >
@@ -114,8 +92,8 @@
                           </q-tooltip>
                         </q-btn>
 
-                        <div class=" text-center q-pt-xs text-weight-thin ">
-                          PAUSE
+                        <div class=" text-center q-pt-xs text-overline">
+                          STOP
                         </div>
                       </div>
                       <div v-else>
@@ -132,16 +110,16 @@
                             anchor="top middle"
                             self="bottom middle"
                           >
-                            Click to resume broadcasting..
+                            Click to resume broadcasting.
                           </q-tooltip>
                         </q-btn>
-                        <div class=" text-center q-pt-xs  text-weight-thin">
+                        <div class=" text-center q-pt-xs  text-overline">
                           RESUME
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
+                </q-card-section>
 
                 <q-card-section v-else class="text-center">
                   <q-btn
@@ -165,7 +143,6 @@
                   </div>
                   <div class="q-gutter-sm">
                     <q-select
-                      :disable="isDisabled"
                       id="audioInput"
                       class="full-width"
                       :options="microphones"
@@ -174,8 +151,7 @@
                       v-model="selectedDevice"
                       @input="setConnectedDevices($event)"
                     />
-                    <q-btn
-                      :disable="isDisabled"
+                    <q-btn  
                       no-caps
                       outline
                       rounded
@@ -295,7 +271,9 @@ export default {
     async disconnect() {
       await serverConnectionService.disconnect();
       this.isConnected = false;
+      this.isMicOn = false;
       this.isDisabledMic = true;
+      this.isDisabled = false;
     },
 
     sendAudioToServer(val) {

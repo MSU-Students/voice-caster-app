@@ -33,8 +33,7 @@ export default {
       filter: '',
       columns: [
         { name: 'client', required: true, label: 'Colleges/Offices', align: 'left', field: 'client', sortable: true, headerClasses: 'bg-cyan-11 text-black'},
-        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
-        { name: 'code', label: 'Code #', field: 'code', sortable: true, align: 'left' },
+        { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true }
       ],
       clientList: [],
       
