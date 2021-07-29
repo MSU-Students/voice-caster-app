@@ -71,8 +71,8 @@
 
               <q-card class="my-card " flat>
                 <q-card-section v-if="isMicOn" class="text-center">
-                  <div >
-                    <div >
+                  <div>
+                    <div>
                       <div v-if="isPause == false">
                         <q-btn
                           round
@@ -105,7 +105,7 @@
                           icon="play_arrow"
                           @click="resume()"
                         >
-                        <q-tooltip
+                          <q-tooltip
                             content-class="bg-primary text-white"
                             anchor="top middle"
                             self="bottom middle"
@@ -117,6 +117,16 @@
                           RESUME
                         </div>
                       </div>
+                    </div>
+                    <div class="q-pt-sm">
+                      <q-btn-group outline rounded spread>
+                        <q-btn color="blue-6" label="Notice Alert" icon="campaign" />
+                        <q-btn
+                          color="red"
+                          label="Emergency Alert"
+                          icon="warning"
+                        />
+                      </q-btn-group>
                     </div>
                   </div>
                 </q-card-section>
@@ -151,7 +161,7 @@
                       v-model="selectedDevice"
                       @input="setConnectedDevices($event)"
                     />
-                    <q-btn  
+                    <q-btn
                       no-caps
                       outline
                       rounded
